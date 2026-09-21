@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>한가위 밥상 | 추석 음식 알아보기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #1E2A4A;
+    --night-2: #2B3A63;
+    --moon: #F4C84A;
+    --celadon: #E3ECE5;
+    --paper: #FFFFFF;
+    --ink: #1C2330;
+    --muted: #55606E;
+    --jujube: #A3272F;
+    --ssuk: #5E7F46;
+    --line: #C9D6CD;
+    --serif: "Gowun Batang", "Nanum Myeongjo", "Batang", serif;
+    --sans: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --celadon: #151C2C; --paper: #1F2840; --ink: #EDEFF3; --muted: #A9B2C2; --line: #34405E;
+      --jujube: #E07A80; --ssuk: #9BC07F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --celadon: #151C2C; --paper: #1F2840; --ink: #EDEFF3; --muted: #A9B2C2; --line: #34405E;
+    --jujube: #E07A80; --ssuk: #9BC07F;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+  body {
+    margin: 0; background: var(--celadon); color: var(--ink);
+    font-family: var(--sans); font-size: 17px; line-height: 1.7;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--moon); outline-offset: 3px; }
+
+  /* ---------- 달 뜨는 첫 화면 ---------- */
+  .hero {
+    background: var(--night); color: #F3F0E6; position: relative; overflow: hidden;
+    padding: calc(64px + env(safe-area-inset-top, 0px)) 24px 72px;
+  }
+  .hero-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; }
+  .hero h1 {
+    font-family: var(--serif); font-weight: 700; margin: 0 0 20px;
+    font-size: clamp(2.6rem, 7vw, 4.8rem); line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .hero p { max-width: 30em; margin: 0 0 28px; color: #C9CEDC; font-size: 1.08rem; }
+  .hero .go {
+    display: inline-block; text-decoration: none; background: var(--moon); color: var(--night);
+    font-weight: 700; padding: 12px 22px; border-radius: 999px;
+  }
+  .moon-wrap { position: relative; aspect-ratio: 1; max-width: 400px; justify-self: center; width: 100%; }
+  .moon {
+    position: absolute; inset: 8%; border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #FFF1B8 0%, var(--moon) 55%, #E0A92A 100%);
+    box-shadow: 0 0 80px 20px rgba(244, 200, 74, .25);
+    animation: rise 1.6s ease-out both;
+  }
+  .moon::before, .moon::after { content: ""; position: absolute; border-radius: 50%; background: rgba(190, 140, 30, .18); }
+  .moon::before { width: 22%; height: 22%; top: 24%; left: 56%; }
+  .moon::after { width: 14%; height: 14%; top: 60%; left: 30%; }
+  .moon-text {
+    position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
+    font-family: var(--serif); color: var(--night); font-size: clamp(1rem, 2.6vw, 1.35rem); line-height: 1.5;
+    animation: rise 1.6s ease-out both;
+  }
+  .moon-text strong { display: block; font-size: 2.2em; line-height: 1.1; }
+  @keyframes rise { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* ---------- 공통 ---------- */
+  main { max-width: 1080px; margin: 0 auto; padding: 56px 24px 40px; }
+  h2 { font-family: var(--serif); font-size: clamp(1.7rem, 4vw, 2.3rem); margin: 0 0 8px; line-height: 1.3; }
+  .lead { color: var(--muted); margin: 0 0 28px; max-width: 40em; }
+
+  /* ---------- 분류 버튼 ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .filters button {
+    font: inherit; font-size: .95rem; cursor: pointer; padding: 8px 16px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: var(--paper); color: var(--ink);
+  }
+  .filters button[aria-pressed="true"] { background: var(--night); border-color: var(--night); color: #fff; }
+  :root[data-theme="dark"] .filters button[aria-pressed="true"] { background: var(--moon); color: var(--night); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .filters button[aria-pressed="true"] { background: var(--moon); border-color: var(--moon); color: var(--night); } }
+
+  /* ---------- 음식 목록 ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px; }
+  .food {
+    background: var(--paper); border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
+    display: flex; flex-direction: column; text-align: left; font: inherit; color: inherit; padding: 0; cursor: pointer;
+  }
+  .food:hover .photo img, .food:hover .photo .fallback { transform: scale(1.04); }
+  .photo { aspect-ratio: 4 / 3; overflow: hidden; background: var(--c, #ddd); }
+  .photo img, .photo .fallback { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+  .fallback { display: grid; place-items: center; font-size: 4.2rem; background: var(--c); }
+  .food-body { padding: 16px 18px 20px; }
+  .food h3 { font-family: var(--serif); font-size: 1.4rem; margin: 0; }
+  .food .hanja { color: var(--muted); font-size: .9rem; margin-left: 6px; font-family: var(--serif); font-weight: 400; }
+  .food .kind { font-size: .82rem; color: var(--ssuk); margin: 2px 0 8px; }
+  .food p { margin: 0; font-size: .96rem; color: var(--muted); }
+
+  /* ---------- 자세히 보기 창 ---------- */
+  dialog {
+    border: none; border-radius: 20px; padding: 0; max-width: 640px; width: calc(100% - 32px);
+    background: var(--paper); color: var(--ink); max-height: 88vh;
+  }
+  dialog::backdrop { background: rgba(20, 26, 44, .6); }
+  .d-photo { aspect-ratio: 16 / 9; }
+  .d-body { padding: 24px 28px 28px; }
+  .d-body h3 { font-family: var(--serif); font-size: 2rem; margin: 0 0 4px; }
+  .d-body h4 { font-size: 1rem; margin: 22px 0 6px; color: var(--jujube); }
+  .d-body p, .d-body ul { margin: 0; }
+  .d-body ul { padding-left: 1.2em; }
+  .credit { margin-top: 22px !important; font-size: .82rem; color: var(--muted); }
+  .close {
+    position: sticky; top: 10px; float: right; margin: 10px 10px 0 0; z-index: 2;
+    font: inherit; font-size: 1.4rem; width: 40px; height: 40px; border-radius: 50%;
+    border: none; background: rgba(0,0,0,.55); color: #fff; cursor: pointer;
+  }
+
+  /* ---------- 조사 활동 ---------- */
+  .activity {
+    margin-top: 72px; background: var(--paper); border-radius: 20px; padding: 32px;
+    border-left: 8px solid var(--jujube);
+  }
+  .activity ol { margin: 16px 0 0; padding-left: 1.3em; }
+  .activity li { margin-bottom: 10px; }
+
+  footer { text-align: center; color: var(--muted); font-size: .88rem; padding: 32px 24px calc(40px + env(safe-area-inset-bottom, 0px)); }
+
+  @media (max-width: 760px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .moon-wrap { max-width: 260px; order: -1; }
+    .activity { padding: 24px 20px; }
+    .d-body { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>한가위<br>밥상 이야기</h1>
+      <p>추석은 한 해 농사를 거두고 조상께 감사드리는 날이에요. 햅쌀과 햇과일로 차린 추석 음식에는 어떤 뜻이 담겨 있을까요? 음식을 하나씩 눌러 자세히 알아보세요.</p>
+      <a class="go" href="#foods">음식 살펴보기</a>
+    </div>
+    <div class="moon-wrap" aria-hidden="true">
+      <div class="moon"></div>
+      <div class="moon-text"><div>음력 8월 15일<strong>추석</strong></div></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="foods">
+    <h2>추석에 먹는 음식</h2>
+    <p class="lead">분류를 눌러 골라 볼 수 있어요. 사진을 누르면 재료와 담긴 뜻, 더 조사해 볼 질문이 나와요.</p>
+    <div class="filters" role="group" aria-label="음식 분류"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="activity" id="activity">
+    <h2>함께 조사해 봐요</h2>
+    <p class="lead" style="margin-bottom:0">가족이나 친구와 이야기하며 답을 찾아보세요.</p>
+    <ol>
+      <li>우리 집 추석 상에는 어떤 음식이 올라가나요? 이 페이지에 없는 음식이 있다면 찾아서 소개해 보세요.</li>
+      <li>송편 모양은 지역마다 달라요. 강원도 감자송편, 제주도 둥근 송편처럼 다른 지역의 송편을 조사해 보세요.</li>
+      <li>추석 음식에 햅쌀, 햇과일처럼 ‘햇-’이 붙는 재료가 많은 까닭은 무엇일까요?</li>
+      <li>다른 나라에도 추석처럼 수확을 감사하는 명절과 음식이 있을까요? (예: 중국의 중추절 월병, 미국의 추수감사절)</li>
+      <li>옛날 추석 음식과 요즘 추석 음식은 어떻게 달라졌는지 어른께 여쭤보세요.</li>
+    </ol>
+  </section>
+</main>
+
+<footer>
+  추석 음식 조사 학습 페이지<br>음식 사진은 위키미디어 공용(Wikimedia Commons)의 자유 이용 사진이며, 저작자와 라이선스는 각 음식의 자세히 보기 창 아래 링크에서 확인할 수 있어요.
+</footer>
+
+<dialog id="detail" aria-labelledby="d-title">
+  <button class="close" type="button" aria-label="닫기">×</button>
+  <div id="d-content"></div>
+</dialog>
+
+<script>
+/*
+  음식 데이터
+  - img: images 폴더 안의 사진 파일 이름 (사진이 없으면 그림 이모지가 대신 나와요)
+  - 새 음식을 추가하려면 아래 목록에 { ... } 하나를 복사해서 고치면 돼요.
+*/
+const FOODS = [
+  {
+    name: "송편", hanja: "松편", kind: "떡·과자", emoji: "🥟", color: "#CFE3C0", img: "songpyeon.jpg", wiki: "Chuseok_Songpyeon.jpg", license: "CC BY-SA 2.0",
+    short: "햅쌀가루로 반달 모양을 빚어 솔잎을 깔고 찐 떡이에요.",
+    ingredients: ["햅쌀가루", "소: 깨·꿀, 콩, 밤, 팥 등", "솔잎", "쑥·치자 등 천연 색 재료"],
+    meaning: "추석을 대표하는 음식이에요. ‘송편’의 ‘송’은 소나무를 뜻하며, 솔잎을 깔고 찌면 향이 좋고 떡이 서로 달라붙지 않아요. 반달은 앞으로 점점 차오를 달이라서, 더 나아질 앞날을 바라는 뜻이 담겨 있다고 전해져요. 송편을 예쁘게 빚으면 예쁜 아이를 낳는다는 옛말도 있어요.",
+    questions: ["왜 보름달이 아니라 반달 모양으로 빚을까요?", "솔잎을 까는 과학적인 까닭을 찾아보세요."]
+  },
+  {
+    name: "토란국", hanja: "土卵국", kind: "국·찜", emoji: "🍲", color: "#E8DCC6", img: "toranguk.jpg", wiki: "Toran-guk.jpg", license: "위키미디어 공용",
+    short: "가을이 제철인 토란을 넣고 맑게 끓인 국이에요.",
+    ingredients: ["토란", "소고기", "다시마", "무", "파·마늘"],
+    meaning: "토란(土卵)은 ‘흙 속의 알’이라는 뜻이에요. 추석 무렵에 많이 거두어 추석 상에 자주 올라요. 기름진 명절 음식을 먹을 때 속을 편하게 해 준다고 여겨졌어요. 알차고 실속 있다는 뜻의 ‘알토란 같다’는 말도 토란에서 나왔어요.",
+    questions: ["토란을 손질할 때 장갑을 끼는 까닭은 무엇일까요?", "‘알토란 같다’는 말을 넣어 문장을 만들어 보세요."]
+  },
+  {
+    name: "모둠전", hanja: "", kind: "전·나물", emoji: "🍳", color: "#F3DFA2", img: "jeon.jpg", wiki: "Korean.pancake-Saengseon_jeon-01.jpg", license: "위키미디어 공용",
+    short: "생선, 고기, 채소에 밀가루와 달걀옷을 입혀 기름에 부쳐요.",
+    ingredients: ["동태(명태)", "다진 고기(동그랑땡)", "애호박", "버섯·고추", "밀가루", "달걀"],
+    meaning: "동태전, 동그랑땡, 호박전 등 여러 가지 전을 함께 부쳐 ‘모둠전’이라고 해요. 기름이 귀하던 시절에는 명절처럼 특별한 날에만 먹을 수 있는 음식이었어요. 가족이 둘러앉아 함께 부치며 명절 분위기를 느끼는 음식이기도 해요.",
+    questions: ["우리 집에서 부치는 전은 몇 가지인가요?", "지역에 따라 다른 전(예: 배추전, 굴전)을 찾아보세요."]
+  },
+  {
+    name: "삼색나물", hanja: "三色나물", kind: "전·나물", emoji: "🥬", color: "#D5E4C8", img: "namul.jpg", wiki: "Korean_cuisine-Namul-03.jpg", license: "위키미디어 공용",
+    short: "흰색·갈색·초록색 세 가지 나물을 무쳐 함께 담아요.",
+    ingredients: ["도라지(흰색)", "고사리(갈색)", "시금치(초록색)", "참기름·깨소금·간장"],
+    meaning: "색이 다른 세 가지 나물을 함께 차려요. 뿌리(도라지), 줄기(고사리), 잎(시금치)을 모두 올려 조상과 자손이 이어진다는 뜻으로 풀이하기도 해요. 집이나 지역에 따라 무나물, 숙주나물을 쓰기도 해요.",
+    questions: ["세 나물이 식물의 어느 부분인지 그림으로 나타내 보세요.", "우리 집 나물은 어떤 색으로 이루어져 있나요?"]
+  },
+  {
+    name: "갈비찜", hanja: "", kind: "국·찜", emoji: "🍖", color: "#E6C3AE", img: "galbijjim.jpg", wiki: "Korean_braised_beef_short_ribs-Galbijjim.jpg", license: "CC BY-SA 3.0",
+    short: "소갈비를 간장 양념에 무, 밤, 대추와 함께 푹 쪄낸 요리예요.",
+    ingredients: ["소갈비(또는 돼지갈비)", "간장·배즙 양념", "무·당근", "밤·대추·은행"],
+    meaning: "고기가 귀하던 옛날에는 잔칫날이나 명절에나 맛볼 수 있던 귀한 음식이었어요. 햇밤과 대추 같은 가을 열매를 함께 넣어 추석의 풍성함을 느낄 수 있어요.",
+    questions: ["양념에 배즙을 넣는 까닭은 무엇일까요?", "찜과 조림은 어떻게 다른지 알아보세요."]
+  },
+  {
+    name: "잡채", hanja: "雜菜", kind: "전·나물", emoji: "🍜", color: "#E9D6C0", img: "japchae.jpg", wiki: "Korean.food-Japchae-03.jpg", license: "CC BY 2.0",
+    short: "당면과 여러 채소, 고기를 볶아 간장 양념에 버무려요.",
+    ingredients: ["당면", "시금치", "당근·양파", "버섯", "소고기", "간장·참기름"],
+    meaning: "잡채(雜菜)는 ‘여러 채소를 섞은 음식’이라는 뜻이에요. 원래는 채소와 고기만으로 만들었고, 지금처럼 당면을 넣은 것은 20세기에 들어서부터예요. 여러 재료가 어우러져 잔치 음식으로 사랑받아요.",
+    questions: ["옛날 잡채와 오늘날 잡채의 차이를 조사해 보세요.", "당면은 무엇으로 만들까요?"]
+  },
+  {
+    name: "식혜", hanja: "食醯", kind: "음료·과일", emoji: "🍶", color: "#F1E6CF", img: "sikhye.jpg", wiki: "Korean_rice_punch-Sikhye-01.jpg", license: "CC BY-SA 2.0",
+    short: "엿기름물에 밥을 삭혀 만든 달콤하고 시원한 음료예요.",
+    ingredients: ["엿기름", "쌀밥", "설탕", "생강(넣기도 함)", "잣"],
+    meaning: "엿기름에 들어 있는 효소가 밥의 녹말을 단맛으로 바꾸어 만들어요. 기름진 명절 음식을 먹은 뒤 소화를 돕는 음료로 즐겨 마셨어요. 밥알이 동동 뜨면 잘 삭은 거예요.",
+    questions: ["밥알이 떠오르는 까닭을 과학적으로 알아보세요.", "식혜와 감주, 안동식혜는 어떻게 다를까요?"]
+  },
+  {
+    name: "약과", hanja: "藥果", kind: "떡·과자", emoji: "🍪", color: "#E8C79B", img: "yakgwa.jpg", wiki: "Korean.food-Yakgwa-01.jpg", license: "CC BY-SA 2.0",
+    short: "밀가루에 꿀과 참기름을 넣어 반죽해 튀긴 뒤 조청에 담가요.",
+    ingredients: ["밀가루", "꿀·조청", "참기름", "생강즙", "잣"],
+    meaning: "꿀과 기름으로 만든 과자라서 ‘유밀과’라고도 해요. 옛날에는 꿀을 몸에 좋은 약처럼 여겨서 ‘약’ 자를 붙였다고 해요. 재료가 귀해 한때는 나라에서 만드는 것을 막았을 만큼 귀한 과자였어요.",
+    questions: ["‘약식’, ‘약주’처럼 ‘약’이 붙은 음식을 더 찾아보세요.", "약과 모양 틀의 무늬에는 어떤 뜻이 있을까요?"]
+  },
+  {
+    name: "햇과일", hanja: "", kind: "음료·과일", emoji: "🍐", color: "#F2D9A7", img: "fruits.jpg", wiki: "Jujubes.JPG", license: "CC BY-SA 3.0",
+    short: "그해 처음 거둔 배, 사과, 밤, 대추, 감 등을 올려요.",
+    ingredients: ["밤", "대추", "배", "사과", "감"],
+    meaning: "추석은 한 해 동안 거둔 곡식과 열매를 조상께 먼저 올리며 감사하는 날이에요. 그래서 그해 처음 난 햇과일을 정성껏 준비해요. 차례상에서는 과일을 놓는 순서(예: 조율이시 – 대추, 밤, 배, 감)를 지키기도 하는데, 집안마다 다를 수 있어요.",
+    questions: ["‘조율이시’, ‘홍동백서’가 무슨 뜻인지 찾아보세요.", "올해 추석은 과일값이 어땠는지 뉴스를 찾아보세요."]
+  },
+  {
+    name: "햅쌀밥", hanja: "", kind: "국·찜", emoji: "🍚", color: "#EFEBDF", img: "rice.jpg", wiki: "Rice_fields_in_south_korea.jpg", license: "CC BY-SA 2.5",
+    short: "그해 새로 거둔 쌀로 지은 밥으로, 윤기와 향이 좋아요.",
+    ingredients: ["햅쌀", "물"],
+    meaning: "추석 음식의 바탕이 되는 재료예요. 햅쌀로 밥을 짓고, 떡(송편)을 빚고, 술(신도주)을 담가 조상께 올렸어요. 한 해 농사의 결실에 감사하는 마음이 가장 잘 담긴 음식이에요.",
+    questions: ["햅쌀과 묵은쌀은 어떻게 다를까요?", "벼가 쌀이 되기까지의 과정을 순서대로 정리해 보세요."]
+  }
+];
+
+const useLocal = false;
+const WIKI = "https://commons.wikimedia.org/wiki/Special:FilePath/";
+const KINDS = ["전체", ...new Set(FOODS.map(f => f.kind))];
+const grid = document.getElementById("grid");
+const filters = document.querySelector(".filters");
+const dialog = document.getElementById("detail");
+const dContent = document.getElementById("d-content");
+
+// 사진이 없거나 못 불러오면 이모지 그림으로 바꿔요
+function photoHTML(f) {
+  // 위키미디어 공용 사진을 불러오고, 실패하면 이모지 그림으로 바꿔요.
+  // 직접 찍은 사진을 쓰려면 useLocal을 true로 바꾸고 images 폴더에 사진을 넣으세요.
+  const src = useLocal ? `images/${f.img}` : `${WIKI}${encodeURIComponent(f.wiki)}?width=800`;
+  return `<img src="${src}" alt="${f.name} 사진" loading="lazy"
+    onerror="this.outerHTML='<div class=&quot;fallback&quot; role=&quot;img&quot; aria-label=&quot;${f.name} 그림&quot;>${f.emoji}</div>'">`;
+}
+
+function creditHTML(f) {
+  if (useLocal) return "";
+  return `<p class="credit">사진: <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(f.wiki)}" target="_blank" rel="noopener">위키미디어 공용</a> (${f.license})</p>`;
+}
+
+function render(kind) {
+  grid.innerHTML = FOODS
+    .filter(f => kind === "전체" || f.kind === kind)
+    .map(f => `
+      <button class="food" type="button" data-name="${f.name}">
+        <div class="photo" style="--c:${f.color}">${photoHTML(f)}</div>
+        <div class="food-body">
+          <h3>${f.name}${f.hanja ? `<span class="hanja">${f.hanja}</span>` : ""}</h3>
+          <div class="kind">${f.kind}</div>
+          <p>${f.short}</p>
+        </div>
+      </button>`).join("");
+}
+
+KINDS.forEach((k, i) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = k;
+  b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+  b.addEventListener("click", () => {
+    filters.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    render(k);
+  });
+  filters.appendChild(b);
+});
+
+grid.addEventListener("click", e => {
+  const card = e.target.closest(".food");
+  if (!card) return;
+  const f = FOODS.find(x => x.name === card.dataset.name);
+  dContent.innerHTML = `
+    <div class="photo d-photo" style="--c:${f.color}">${photoHTML(f)}</div>
+    <div class="d-body">
+      <h3 id="d-title">${f.name}${f.hanja ? `<span class="hanja" style="font-size:1rem;margin-left:8px;color:var(--muted)">${f.hanja}</span>` : ""}</h3>
+      <p style="color:var(--muted)">${f.short}</p>
+      <h4>주요 재료</h4>
+      <p>${f.ingredients.join(", ")}</p>
+      <h4>담긴 뜻과 이야기</h4>
+      <p>${f.meaning}</p>
+      <h4>더 조사해 볼 질문</h4>
+      <ul>${f.questions.map(q => `<li>${q}</li>`).join("")}</ul>
+      ${creditHTML(f)}
+    </div>`;
+  dialog.showModal();
+});
+
+dialog.querySelector(".close").addEventListener("click", () => dialog.close());
+dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); });
+
+render("전체");
+</script>
+</body>
+</html>
